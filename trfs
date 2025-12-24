@@ -4,6 +4,10 @@ import argparse
 
 data_file = '/home/abner/.local/share/trfs/trfs.json'
 
+def pega_json():
+    with open(data_file, 'r', encoding='utf-8') as objeto_json:
+        dicionario = json.load(objeto_json)
+    return dicionario
 
 def main():
     parser = argparse.ArgumentParser(
@@ -12,36 +16,56 @@ def main():
     )
     subparsers = parser.add_subparsers(dest='comando')
     subparsers.add_parser('criar').add_argument('texto')
-    subparsers.add_parser('ls')
+    subparsers.add_parser('ls').add_argument('-c', '--concluidas', action='store_true')
     subparsers.add_parser('rm').add_argument('texto')
 
     args = parser.parse_args()
     
     if args.comando == 'criar':
-        with open(data_file, 'r', encoding='utf-8') as objeto_json:
-            dici_py = json.load(objeto_json)
-        novo_id = f'{int(str(list(dici_py.keys())[-1])[-1])+1:0>2}'
+        dici_py = pega_json()
+        try:
+            novo_id = f'{int(str(list(dici_py.keys())[-1])[-1])+1:0>2}'
+        except IndexError:
+            novo_id = '01'
         dici_py[novo_id] = {args.texto: 'Elaborada'}
         with open(data_file, 'w', encoding='utf-8') as objeto_json:
             json.dump(dici_py, objeto_json)
         print(f'Tarefa "{args.texto}" criada')
 
-    if args.comando == 'ls':
-        with open(data_file, 'r', encoding='utf-8') as objeto_json:
-            dicio = json.load(objeto_json)
+
+    elif args.comando == 'ls':
+        dici_py = pega_json()
+        if args.comando == 'ls' and args.concluidas == True:
+            for ids in dici_py.keys():
+                if list(dici_py[ids].values())[0] == 'Concluída':
+                    print('Tarefas concluídas:')
+                    print(f'{ids}: {list(dici_py[ids].keys())[0]}')
+                    exit()
+                
         try:
-            for ids in dicio.keys():
-                chave = str(list(dicio[ids].keys())[0])
-                print(f'{chave.title()}: {dicio[ids][chave]}')
-        except Exception as e:
-            print(f'{e} aaaa')
+            for ids in dici_py.keys():
+                chave = str(list(dici_py[ids].keys())[0])
+                print(f'{ids}: {chave.title()} ({dici_py[ids][chave]})')
+        except:
             print('Nenhuma tarefa adicionada')
-    # if args.comando == 'rm':
-    #     print(f'Removendo tarefa {args.texto}')
-    #     try:
-    #         dicio.pop(args.texto)
-    #     except:
-    #         print('Tarefa não encontrada')
+    
+
+
+    elif args.comando == 'rm':
+        print(f'Removendo tarefa {args.texto}')
+        dici_py = pega_json()
+        try:
+            dici_py.pop(args.texto)
+            with open(data_file, 'w', encoding='utf-8') as objeto_json:
+                objeto_json = json.dump(dici_py, objeto_json)
+        except:
+            print('Tarefa não encontrada')
+    
+    elif args.comando == 'check':
+        print('gay')
+    
+    else:
+        print('Error: comando não identificado: tente help para ver os comandos')
 
 if __name__ == '__main__':
     main()
