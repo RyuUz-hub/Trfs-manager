@@ -1,4 +1,4 @@
-https://github.com/RyuUz-hub/Trfs-manager.git
+https://roadmap.sh/projects/task-tracker
 Simple task manager project in CLI using JSON
 Language: pt-BR
 Saving data as a JSON at file: /home/abner/.local/share/trfs/trfs.json
