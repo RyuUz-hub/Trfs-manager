@@ -1,7 +1,7 @@
+https://github.com/RyuUz-hub/Trfs-manager.git
 Simple task manager project in CLI using JSON
 Language: pt-BR
 Saving data as a JSON at file: /home/abner/.local/share/trfs/trfs.json
-Project URL: https://github.com/RyuUz-hub/Trfs-manager.git
 
         Total of 3 commands:
 
